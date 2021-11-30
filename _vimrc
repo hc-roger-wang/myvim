@@ -27,7 +27,13 @@ Plugin 'scrooloose/nerdcommenter'
 Plugin 'tpope/vim-speeddating'
 Plugin 'tpope/vim-repeat'
 Plugin 'yggdroot/leaderf'
+Plugin 'morhetz/gruvbox'
+Plugin 'NLKNguyen/papercolor-theme'
+Plugin 'lyokha/vim-xkbswitch'
+" Plugin 'sjl/gundo.vim'
+Plugin 'ap/vim-css-color'
 " Plugin 'neoclide/coc.nvim'
+Plugin 'thaerkh/vim-workspace'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -131,7 +137,16 @@ set number
 syntax on
 syntax enable
 set background=dark
-colorscheme gruvbox
+" colorscheme PaperColor
+autocmd vimenter * ++nested colorscheme gruvbox
+" It was a problem to display italic words, after check stackoverflow it is a
+" font problem. Use script to avoid it. I still like italic
+" let g:gruvbox_italic=0
+if has("gui_macvim")
+  set guifont=Menlo
+elseif has("gui_running")
+  set guifont=JetBrains\ Mono:h10
+endif
 
 function! ToggleGUICruft()
   if &guioptions=='i'
@@ -153,7 +168,7 @@ set softtabstop=2
 set cursorline
 set showcmd
 set wildmenu
-set lazyredraw
+" set lazyredraw
 set showmatch
 set incsearch
 set hlsearch
@@ -161,14 +176,23 @@ set foldenable
 set foldlevelstart=10
 set foldnestmax=10
 set foldmethod=indent
+" personal preference
+" leader space to cancel search highlight
 nnoremap <leader><space> :nohlsearch<CR>
+" leader a c to yank all to system clipboard
+nnoremap <leader>ac ggVG"*y
+" leader m h (make footer hyperlink) to make markdown hyperlink in footer
+nnoremap <leader>mh y%Go<ESC>pa:<ESC><C-O>
+" o and O insert new line but still in normal mode,
 nnoremap o o<ESC>
 nnoremap O O<ESC>
 " Press F12 to switch to UTF-8 encoding
 nnoremap <F12> :e ++enc=utf-8<CR>
+
 au GUIEnter * simalt ~x
 
-let g:mkdp_auto_start = 1
+let g:mkdp_auto_start = 0
+nmap <F10> <Plug>MarkdownPreviewToggle
 let g:indent_guides_enable_on_vim_startup = 1
 set ts=2 sw=2 et
 let g:indent_guides_start_level = 2
@@ -208,3 +232,18 @@ noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
 " noremap <leader>fo :<C-U><C-R>=printf("Leaderf! gtags --recall %s", "")<CR><CR>
 " noremap <leader>fn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
 " noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
+let g:airline_theme='base16'
+
+" Enable vim-workspace auto save by default and disable autotrail
+let g:workspace_autosave_always = 1
+let g:workspace_autosave_untrailspaces = 0
+let g:workspace_autosave_untrailtabs = 0
+set autochdir
+let NERDTreeShowHidden=1
+
+" Map tab and shift tab for indent in normal and visual mode
+nnoremap <Tab> >>_
+nnoremap <S-Tab> <<_
+inoremap <S-Tab> <C-D>
+vnoremap <Tab> >gv
+vnoremap <S-Tab> <gv
